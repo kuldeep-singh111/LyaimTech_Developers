@@ -80,4 +80,50 @@ const signup = async (req, res) => {
     }
 };
 
-module.exports = { login, signup };
+/*** Update Profile Controller */
+const updateProfile = async (req, res) => {
+    const { userId, username, email, mobileNo, password } = req.body;
+
+    // Check if required fields are provided
+    if (!userId || (!username && !email && !mobileNo && !password)) {
+        return res.status(400).json({
+            message: "Please provide the user ID and at least one field to update.",
+        });
+    }
+
+    try {
+        // Find the user by ID
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found." });
+        }
+
+        // Update the fields if provided
+        // if (username) user.username = username;
+        // if (email) user.email = email;
+        if (mobileNo) user.mobileNo = mobileNo;
+
+        // If password is provided, hash it before saving
+        if (password) {
+            const salt = await bcrypt.genSalt(10);
+            user.password = await bcrypt.hash(password, salt);
+        }
+
+        // Save the updated user
+        await user.save();
+
+        return res.status(200).json({
+            message: "Profile updated successfully.",
+            updatedFields: { username, email, mobileNo },
+        });
+    } catch (error) {
+        console.error("Error updating profile:", error.message);
+        return res.status(500).json({
+            message: "Internal Server Error",
+            error: error.message,
+        });
+    }
+};
+
+module.exports = { login, signup, updateProfile };
