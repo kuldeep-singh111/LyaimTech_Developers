@@ -35,14 +35,17 @@ export default function Login() {
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
     } else {
-      setErrors({});alert('Submitted');
+      setErrors({}); alert('Submitted');
       console.log('Login successful with:', formData);
       // Handle successful login (e.g., API call)
     }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-500">
+    <div className="min-h-screen bg-cover bg-center flex items-center justify-center relative"
+      style={{
+        backgroundImage: "images/registration_ground.png", // Add your stadium image here
+      }}>
       <div className="w-full max-w-md p-4 bg-gray-300 text-black rounded shadow-md">
         <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">Login</h2>
         <form onSubmit={handleSubmit}>
