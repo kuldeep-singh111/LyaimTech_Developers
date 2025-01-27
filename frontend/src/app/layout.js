@@ -1,4 +1,4 @@
-import { Geist, Geist_Mono, Alex_Brush, Alegreya_SC, Aleo } from "next/font/google";
+import { Geist, Geist_Mono, Alex_Brush, Alegreya_SC, Aleo,  Abril_Fatface, Agbalumo } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -15,6 +15,19 @@ const alexBrush = Alex_Brush({
   variable: "--font-alex-brush", // Define a CSS variable for Alex Brush
   subsets: ["latin"],
   weight: "400", // Alex Brush typically uses a regular weight
+});
+
+// New
+const abrilFatface = Abril_Fatface({
+  subsets: ['latin'], // Choose subsets based on your project
+  weight: '400', // Customize weights if needed
+  variable: '--font-abril'
+});
+
+const agbalumo = Agbalumo({
+  subsets: ['latin'], // Specify subsets as needed
+  weight: '400', // Choose font weights as applicable
+  variable: '--font-agbalumo'
 });
 
 const alegreyaSC = Alegreya_SC({
@@ -38,7 +51,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${alexBrush.variable} ${alegreyaSC.variable} ${aleo.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${alexBrush.variable} ${alegreyaSC.variable} ${aleo.variable}  ${abrilFatface.variable} ${agbalumo.variable} antialiased`}
       >
         {children}
       </body>
