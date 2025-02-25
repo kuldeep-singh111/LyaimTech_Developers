@@ -8,6 +8,9 @@ import { useSearchParams } from 'next/navigation';
 import { useUser } from "@/context/AuthContext.js";
 
 export default function Wallet() {
+    return <WalletContent\>
+}
+functions WalletContent(){
     const searchParams = useSearchParams();
     const status = searchParams.get('status');
     const token = searchParams.get('token');
