@@ -30,7 +30,7 @@ jobs:
             - name: Deploy to VM
               uses: appleboy/ssh-action@v1.2.0
               with:
-                host: "" 
+                host: "44.214.177.203" 
                 username: "ubuntu" 
                 key: ${{ secrets.SSH_PRIVATE_KEY }}
                 port: 22
