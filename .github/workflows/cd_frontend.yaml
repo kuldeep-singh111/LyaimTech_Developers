@@ -23,6 +23,8 @@ jobs:
                 context: ./frontend
                 file: ./frontend/Dockerfile
                 push: true
+                build-args: 
+                  NEXT_PUBLIC_BASE_URL=${{ secrets.BASE_URL }}
                 tags: | 
                   rohitsamasi555/lyaim-tech-frontend:${{ github.sha }} 
                   rohitsamasi555/lyaim-tech-frontend:latest
@@ -30,7 +32,7 @@ jobs:
             - name: Deploy to VM
               uses: appleboy/ssh-action@v1.2.0
               with:
-                host: ""
+                host: "44.214.177.203"
                 username: "ubuntu" # Your SSH user
                 key: ${{ secrets.SSH_PRIVATE_KEY }}
                 port: 22
@@ -42,5 +44,5 @@ jobs:
                       sudo docker stop lyaim-frontend
                       sudo docker rm lyaim-frontend
                   fi
-                  sudo docker run -d --name lyaim-frontend -e NEXT_PUBLIC_BASE_URL="${{ secrets.BASE_URL }}" -p 3000:3000 --restart always rohitsamasi555/lyaim-tech-frontend:latest
+                  sudo docker run -d --name lyaim-frontend -p 3000:3000 --restart always rohitsamasi555/lyaim-tech-frontend:latest
                   sudo docker image prune -f
