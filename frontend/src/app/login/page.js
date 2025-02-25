@@ -76,7 +76,7 @@ const Login = () => {
             <Navbar />
 
             <h1 className="text-2xl font-bold font-alegreya text-white mb-2 text-center">
-                LOG IN AND PLAY TO WIN123!
+                LOG IN AND PLAY TO WIN!
             </h1>
 
             {/* Login Container */}
