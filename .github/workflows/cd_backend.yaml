@@ -26,8 +26,8 @@ jobs:
                 tags: |
                   rohitsamasi555/lyaim-tech-backend:${{ github.sha }} 
                   rohitsamasi555/lyaim-tech-backend:latest
-                cache-from: type=registry,ref=rohitsamasi555/lyaim-tech-backend:latest
-                cache-to: type=inline
+                cache-from: type=gha
+                cache-to: type=gha,mode=max
             
             - name: Deploy to VM
               uses: appleboy/ssh-action@v1.2.0
