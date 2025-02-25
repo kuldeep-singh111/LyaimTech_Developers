@@ -1,4 +1,4 @@
-import { Geist, Geist_Mono, Alex_Brush, Alegreya_SC, Aleo,  Abril_Fatface, Agbalumo, Arizonia  } from "next/font/google";
+import { Geist, Geist_Mono, Alex_Brush, Alegreya_SC, Aleo, Abril_Fatface, Agbalumo, Arizonia } from "next/font/google";
 import "./globals.css";
 
 import { UserProvider } from "@/context/AuthContext";
@@ -58,14 +58,14 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <UserProvider>
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} ${alexBrush.variable} ${alegreyaSC.variable} ${aleo.variable}  ${abrilFatface.variable} ${agbalumo.variable} ${arizonia.variable} antialiased`}
-      >
-        <Toaster reverseOrder={false} />
-        {children}
-      </body>
-    </html>
+      <html lang="en">
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} ${alexBrush.variable} ${alegreyaSC.variable} ${aleo.variable}  ${abrilFatface.variable} ${agbalumo.variable} ${arizonia.variable} antialiased`}
+        >
+          <Toaster reverseOrder={false} />
+          {children}
+        </body>
+      </html>
     </UserProvider>
   );
 }

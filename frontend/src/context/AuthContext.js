@@ -14,7 +14,7 @@ export const UserProvider = ({ children }) => {
 
   // Function to fetch user details
   const fetchUser = async () => {
-    if( !localStorage.getItem("token") ) return
+    if (!localStorage.getItem("token")) return
     try {
       setLoading(true);
       const res = await apiService.profile();
@@ -31,7 +31,7 @@ export const UserProvider = ({ children }) => {
 
   // Function to fetch wallet details
   const fetchWallet = async () => {
-    if( !localStorage.getItem("token") ) return
+    if (!localStorage.getItem("token")) return
     try {
       const res = await apiService.fetchData("/wallet");
       if (res.status === 200) {

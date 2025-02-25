@@ -4,7 +4,9 @@ import Image from 'next/image';
 import { useRouter } from "next/navigation";
 
 
+
 const Home2 = () => {
+
 
     const router = useRouter();
 
@@ -33,7 +35,7 @@ const Home2 = () => {
 
                 <div className="flex flex-col items-center space-y-0 w-56">
                     <Image width={150} height={140} src={'/Images/club1.png'} alt='Choose Team' />
-                    <button className="py-2 w-full text-white bg-[#3C645F80] rounded-md hover:bg-[#3C645FBF]" onClick={() => router.push("/team-choose")}>
+                    <button className="py-2 w-full text-white bg-[#3C645F80] rounded-md hover:bg-[#3C645FBF]" onClick={() => router.push('/match-overview')} >
                         Choose Team
                     </button>
                 </div>
