@@ -13,10 +13,9 @@ RUN npm install
 
 # Step 5: Copy the rest of the application code into the container
 COPY . .
-RUN npm run build
 
 # Step 7: Expose the port that Next.js will run on
 EXPOSE 3000
 
 # Step 8: Start the Next.js application
-CMD ["npm","run","start"]
+CMD ["npm","run","dev"]
