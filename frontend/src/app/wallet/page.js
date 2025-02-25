@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import Image from 'next/image';
 import Navbar from '@/components/Navbar';
 import apiService from '@/components/apiService';
@@ -8,7 +8,9 @@ import { useSearchParams } from 'next/navigation';
 import { useUser } from "@/context/AuthContext.js";
 
 export default function Wallet() {
-    return <WalletContent\>
+    <Suspense fallback={<div>Loading...</div>}>
+      <WalletContent />
+    </Suspense>
 }
 functions WalletContent(){
     const searchParams = useSearchParams();
