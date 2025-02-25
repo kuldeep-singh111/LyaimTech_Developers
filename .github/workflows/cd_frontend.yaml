@@ -28,6 +28,8 @@ jobs:
                 tags: | 
                   rohitsamasi555/lyaim-tech-frontend:${{ github.sha }} 
                   rohitsamasi555/lyaim-tech-frontend:latest
+                cache-from: type=registry,ref=rohitsamasi555/lyaim-tech-frontend:latest
+                cache-to: type=inline
 
             - name: Deploy to VM
               uses: appleboy/ssh-action@v1.2.0
