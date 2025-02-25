@@ -30,8 +30,8 @@ const Register = () => {
     const validate = () => {
         const errors = {};
 
-        if (!formData.username.trim()) {
-            errors.username = "Username is required.";
+        if (formData.username.length < 3) {
+            errors.username = "Username must be at least 3 characters.";
         }
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
             errors.email = "Invalid email format.";
