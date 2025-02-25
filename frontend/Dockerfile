@@ -1,6 +1,7 @@
 # Step 1: Use the official Node.js image as the base
 FROM node:18-alpine
-
+ARG NEXT_PUBLIC_BASE_URL
+ENV NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL
 # Step 2: Set the working directory in the container
 WORKDIR /app
 
