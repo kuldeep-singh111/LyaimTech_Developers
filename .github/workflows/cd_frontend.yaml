@@ -3,6 +3,9 @@ name: LyaimTech frontend
 on: 
     push: 
         branches: [ main ]
+        paths:
+         - 'frontend/**'
+         - '.github/workflows/cd_frontend.yaml'
 
 jobs: 
     build: 
