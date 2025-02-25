@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect} from 'react';
+import { useState, useEffect, Suspense} from 'react';
 import Image from 'next/image';
 import Navbar from '@/components/Navbar';
 import apiService from '@/components/apiService';
@@ -7,7 +7,15 @@ import { toast } from 'react-toastify';
 import { useSearchParams } from 'next/navigation';
 import { useUser } from "@/context/AuthContext.js";
 
-export default function Wallet() {
+export default function WalletPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <WalletContent />
+    </Suspense>
+  );
+}
+
+function WalletContent() {
     const searchParams = useSearchParams();
     const status = searchParams.get('status');
     const token = searchParams.get('token');
