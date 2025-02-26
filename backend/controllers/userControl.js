@@ -15,14 +15,14 @@ const login = async (req, res) => {
         const user = await User.findOne({ email });
 
         if (!user) {
-            console.error("User not found.");
+            // console.error("User not found.");
             return res.status(400).json({ success: false, message: "User not found" });
         }
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
 
         if (!isPasswordValid) {
-            console.error("Password mismatch.");
+            // console.error("Password mismatch.");
             return res.status(401).json({ success: false, message: "Invalid password." });
         }
 

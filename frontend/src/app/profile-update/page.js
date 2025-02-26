@@ -17,10 +17,10 @@ const ProfileUpdate = () => {
     const [updating, setUpdating] = useState(false);
     const [errors, setErrors] = useState({
         username: '',
-        email: '',
+        // email: '',
         mobileNo: ''
     });
-    const { user, loading, logout } = useUser();
+    const { user, loading } = useUser();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -29,20 +29,15 @@ const ProfileUpdate = () => {
 
     const validateFields = () => {
         let valid = true;
-        let newErrors = { username: '', email: '', mobileNo: '' };
+        // let newErrors = { username: '', email: '', mobileNo: '' };
+        let newErrors = { username: '', mobileNo: '' };
 
         // Username validation
         if (!formData.username.trim()) {
             newErrors.username = "Username is required.";
             valid = false;
-        }
-
-        // Email validation
-        if (!formData.email.trim()) {
-            newErrors.email = "Email is required.";
-            valid = false;
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = "Please enter a valid email address.";
+        } else if (formData.username.length < 3) {
+            newErrors.username = "Username must be of length 3.";
             valid = false;
         }
 
@@ -75,10 +70,6 @@ const ProfileUpdate = () => {
         } finally {
             setUpdating(false);
         }
-    };
-
-    const handleLogout = async () => {
-        await logout();
     };
 
     useEffect(() => {
@@ -119,11 +110,11 @@ const ProfileUpdate = () => {
                             type="email"
                             name="email"
                             value={formData.email}
-                            placeholder="Email"
-                            onChange={(e) => handleChange(e)}
+                            readOnly
+                            // onChange={(e) => handleChange(e)}
                             className="w-full border-b bg-transparent font-aleo text-xl placeholder-black outline-none pl-2"
                         />
-                        {errors.email && <div className="text-red-500 text-sm">{errors.email}</div>}
+                        {/* {errors.email && <div className="text-red-500 text-sm">{errors.email}</div>} */}
                     </div>
                     {/* Username Field */}
                     <div className="mb-5">
@@ -166,14 +157,14 @@ const ProfileUpdate = () => {
                     </button>
                     <button
                         type="button"
-                        onClick={handleLogout}
+                        onClick={() => window.history.back()}
                         className="w-full py-1 rounded-full text-white text-lg font-bold hover:bg-green-600 transition"
                         style={{
                             background: 'linear-gradient(150deg, #5672B8, #040B29DB)',
                             boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.2)',
                         }}
                     >
-                        Logout
+                        Go Back
                     </button>
                 </div>
             </div>

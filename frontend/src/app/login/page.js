@@ -46,6 +46,7 @@ const Login = () => {
         try {
             setLoading(true);
             const response = await apiService.login(formData);
+            // console.log(response);
             toast.success("Logged in Successfully");
             localStorage.setItem('token', response.data.data)
 
@@ -56,11 +57,12 @@ const Login = () => {
 
             router.push("/");window.location.reload();
         } catch (error) {
-            toast.error(" Login Failed", error.response?.data?.message || error.message);
-            setErrors((prevErrors) => ({
-                ...prevErrors,
-                server: error.response?.data?.message || "Something went wrong!",
-            }));
+            // console.log(error);
+            toast.error(error?.response?.data?.message || error?.message);
+            // setErrors((prevErrors) => ({
+            //     ...prevErrors,
+            //     server: error.response?.data?.message || "Something went wrong!",
+            // }));
         } finally {
             setLoading(false);
         }
