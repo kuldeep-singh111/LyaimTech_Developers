@@ -154,7 +154,7 @@ const checkUserContest = async (req, res) => {
     }
 };
 
-// Route to store data comong from admin panel
+// Controller to store data coming from admin panel
 const createContest = async (req, res) => {
     try {
         const { name, entryFee, maxPlayers, prizePool, matchId } = req.body;
@@ -186,4 +186,78 @@ const createContest = async (req, res) => {
     }
 };
 
-module.exports = { ContestHandle, JoinContest, checkUserContest, createContest };
+// Controller to get all contests for admin
+const getAllContests = async (req, res) => {
+    try {
+        // Fetch contests excluding 'teams' and 'players'
+        const contests = await Contest.find({}, { teams: 0, players: 0 });
+
+        if (!contests.length) {
+            return res.status(404).json({ success: false, message: "No contest found." });
+        }
+
+        // Convert createdAt & updatedAt to human-readable format
+        const formattedContests = contests.map(contest => ({
+            ...contest.toObject(), // Convert Mongoose document to plain object
+            createdAt: new Date(contest.createdAt).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+            updatedAt: new Date(contest.updatedAt).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })
+        }));
+        // res.status(200).json({ success: true, contests });
+        res.status(200).json({ success: true, contests: formattedContests });
+    } catch (error) {
+        console.error("Error fetching contests:", error);
+        res.status(500).json({ success: false, message: "Internal server error!" });
+    }
+};
+
+// Controller to delete a contest for admin
+const deleteContest = async (req, res) => {
+    try {
+        const { contestId } = req.params; // Extract contest ID from request URL
+
+        if (!contestId) {
+            return res.status(400).json({ success: false, message: "Contest ID is required." });
+        }
+
+        const deletedContest = await Contest.findByIdAndDelete(contestId);
+
+        if (!deletedContest) {
+            return res.status(404).json({ success: false, message: "Contest not found." });
+        }
+        // console.log(deletedContest);
+        res.status(200).json({ success: true, message: "Contest deleted successfully." });
+
+    } catch (error) {
+        console.error("Error deleting contest:", error);
+        res.status(500).json({ success: false, message: "Internal server error." });
+    }
+};
+
+// Controller to update a contest for admin
+const updateContest = async (req, res) => {
+    try {
+        const { contestId } = req.params; // Extract contest ID from request URL
+        const updateData = req.body; // Get updated contest data from request body
+
+        if (!contestId) {
+            return res.status(400).json({ success: false, message: "Contest ID is required." });
+        }
+
+        const updatedContest = await Contest.findByIdAndUpdate(
+            contestId,
+            updateData,
+            { new: true, runValidators: true } // Return updated document & validate fields
+        );
+
+        if (!updatedContest) {
+            return res.status(404).json({ success: false, message: "Contest not found." });
+        }
+
+        res.status(200).json({ success: true, message: "Contest updated successfully.", contest: updatedContest });
+    } catch (error) {
+        console.error("Error updating contest:", error);
+        res.status(500).json({ success: false, message: "Internal server error." });
+    }
+};
+
+module.exports = { ContestHandle, JoinContest, checkUserContest, createContest, getAllContests, deleteContest, updateContest };

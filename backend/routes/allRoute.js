@@ -5,9 +5,9 @@ const { userProfile } = require("../controllers/userProfile")
 const { updateUserProfile } = require("../controllers/updateUserProfile");
 const { logoutUser } = require("../controllers/logoutUser");
 const { TeamChooseGet, TeamChoosePost, createLineUp } = require("../controllers/teamChooseGet")
-const { MatchOverview, createMatch } = require("../controllers/matchOverview");
+const { MatchOverview, createMatch, deleteMatch, updateMatch } = require("../controllers/matchOverview");
 const { WalletPage, AddFunds, AddFundssSuccess, Withdrawal } = require("../controllers/wallet");
-const { ContestHandle, JoinContest, checkUserContest, createContest } = require("../controllers/contest");
+const { ContestHandle, JoinContest, checkUserContest, createContest, getAllContests, deleteContest, updateContest } = require("../controllers/contest");
 const { LeaderBoard, Finalize, CalculateScores } = require("../controllers/leaderboard");
 const { contact } = require("../controllers/contact.controller.js");
 
@@ -56,5 +56,14 @@ router.post("/logout", authenticate, logoutUser)
 router.post("/admin/match", authenticate, createMatch)
 router.post("/admin/contest", authenticate, createContest)
 router.post("/admin/team", authenticate, createLineUp)
+
+router.get("/admin/getMatches", authenticate, MatchOverview);
+router.delete("/admin/deleteMatch/:matchId", authenticate, deleteMatch);
+router.put("/admin/updateMatch/:matchId", authenticate, updateMatch);
+// router.get("/admin/getTeams", authenticate, getAllTeams);
+
+router.get("/admin/getContests", authenticate, getAllContests);
+router.delete("/admin/deleteContest/:contestId", authenticate, deleteContest);
+router.put("/admin/updateContest/:contestId", authenticate, updateContest);
 
 module.exports = router;

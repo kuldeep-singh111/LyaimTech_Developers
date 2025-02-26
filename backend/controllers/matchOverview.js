@@ -192,4 +192,53 @@ const createMatch = async (req, res) => {
     }
 };
 
-module.exports = { MatchOverview, createMatch };
+// Controller to delete a match for admin
+const deleteMatch = async (req, res) => {
+    try {
+        const { matchId } = req.params; // Extract Match ID from request URL
+
+        if (!matchId) {
+            return res.status(400).json({ success: false, message: "Match ID is required." });
+        }
+
+        const deletedMatch = await Match.findByIdAndDelete(matchId);
+
+        if (!deletedMatch) {
+            return res.status(404).json({ success: false, message: "Match not found." });
+        }
+        // console.log(deletedMatch);
+        res.status(200).json({ success: true, message: "Match deleted successfully." });
+    } catch (error) {
+        console.error("Error deleting Match:", error);
+        res.status(500).json({ success: false, message: "Internal server error." });
+    }
+};
+
+// Controller to update a Match for admin
+const updateMatch = async (req, res) => {
+    try {
+        const { matchId } = req.params; // Extract Match ID from request URL
+        const updateData = req.body; // Get updated Match data from request body
+
+        if (!matchId) {
+            return res.status(400).json({ success: false, message: "Match ID is required." });
+        }
+
+        const updatedMatch = await Match.findByIdAndUpdate(
+            matchId,
+            updateData,
+            { new: true, runValidators: true } // Return updated document & validate fields
+        );
+
+        if (!updatedMatch) {
+            return res.status(404).json({ success: false, message: "Match not found." });
+        }
+
+        res.status(200).json({ success: true, message: "Match updated successfully.", Match: updatedMatch });
+    } catch (error) {
+        console.error("Error updating Match:", error);
+        res.status(500).json({ success: false, message: "Internal server error." });
+    }
+};
+
+module.exports = { MatchOverview, createMatch, deleteMatch, updateMatch };
