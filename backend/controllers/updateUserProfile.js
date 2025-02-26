@@ -4,7 +4,7 @@ const User = require("../models/user");
 
 const updateUserProfile = async (req, res) => {
     const userId = req.user.id;
-    const { email, username, mobileNo } = req.body;console.log(email, username, mobileNo);
+    const { email, username, mobileNo } = req.body;//console.log(email, username, mobileNo);
 
     try {
      
