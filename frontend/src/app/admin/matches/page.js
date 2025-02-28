@@ -18,7 +18,8 @@ const MatchesPage = () => {
     useEffect(() => {
         const fetchMatches = async () => {
             try {
-                const response = await apiService.fetchData('/admin/getMatches'); console.log(response);
+                const response = await apiService.fetchData('/admin/getMatches'); 
+                console.log(response);
                 setLiveMatches(response.data?.live || []);
                 setUpcomingMatches(response.data?.upcoming || []);
                 setCompletedMatches(response.data?.completed || []);
@@ -33,7 +34,13 @@ const MatchesPage = () => {
     const handleCreateMatch = async () => {
         try {
             const response = await apiService.postData('/admin/match', newMatch);
-            setMatches([...matches, response.data]);
+            if (newMatch.status === 'Upcoming') {
+                setUpcomingMatches((prevMatches) => [...prevMatches, response.data]);
+            } else if (newMatch.status === 'Live') {
+                setLiveMatches((prevMatches) => [...prevMatches, response.data]);
+            } else {
+                setCompletedMatches((prevMatches) => [...prevMatches, response.data]);
+            }
             toast.success('Match added successfully!');
             setNewMatch({ home_team: '', away_team: '', match_date: '', status: 'Upcoming' });
         } catch (error) {
@@ -44,42 +51,77 @@ const MatchesPage = () => {
 
     // Edit a match
     const handleEditMatch = async (id) => {
-        const matchToEdit = matches.find((match) => match.id === id);
+        // Find the match from all categories
+        const matchToEdit = [...liveMatches, ...upcomingMatches, ...completedMatches].find((match) => match.id === id);
+        
+        // Set the form to the current match's values
         setNewMatch({
+            id: matchToEdit.id,
             home_team: matchToEdit.home_team,
             away_team: matchToEdit.away_team,
             match_date: matchToEdit.match_date,
             status: matchToEdit.status,
         });
 
-        // Optionally, we can remove the match temporarily from the list to show the form for editing
-        setMatches(matches.filter((match) => match.id !== id));
+        // Remove the match temporarily from the list for editing (only from the correct status list)
+        if (matchToEdit.status === 'Live') {
+            setLiveMatches(liveMatches.filter((match) => match.id !== id));
+        } else if (matchToEdit.status === 'Upcoming') {
+            setUpcomingMatches(upcomingMatches.filter((match) => match.id !== id));
+        } else {
+            setCompletedMatches(completedMatches.filter((match) => match.id !== id));
+        }
     };
 
     // Save the edited match
     const handleSaveEdit = async () => {
-        // try {
-        //     const response = await apiService.putData(/admin/match / ${ newMatch.id }, newMatch);
-        //     setMatches((prevMatches) =>
-        //         prevMatches.map((match) => (match.id === response.data.id ? response.data : match))
-        //     );
-        //     toast.success('Match edited successfully!');
-        //     setNewMatch({ home_team: '', away_team: '', match_date: '', status: 'Upcoming' });
-        // } catch (error) {
-        //     toast.error('Error editing match');
-        // }
-    };
+        try {
+            console.log('Editing match with ID:', newMatch.id);  // Log the match ID
+            const response = await apiService.putData(`/admin/updateMatch/${newMatch.id}`, newMatch);
+    
+            // Update the match in the correct list based on the status
+            if (newMatch.status === 'Live') {
+                setLiveMatches((prevMatches) =>
+                    prevMatches.map((match) => (match.id === newMatch.id ? response.data : match))
+                );
+            } else if (newMatch.status === 'Upcoming') {
+                setUpcomingMatches((prevMatches) =>
+                    prevMatches.map((match) => (match.id === newMatch.id ? response.data : match))
+                );
+            } else if (newMatch.status === 'Completed') {
+                setCompletedMatches((prevMatches) =>
+                    prevMatches.map((match) => (match.id === newMatch.id ? response.data : match))
+                );
+            }
+    
+            toast.success('Match edited successfully!');
+            setNewMatch({ home_team: '', away_team: '', match_date: '', status: 'Upcoming' }); // Reset the form
+        } catch (error) {
+            toast.error('Error editing match');
+            console.error('Error:', error);
+        }
+    };    
 
     // Delete a match
-    const handleDeleteMatch = async (id) => {
-        // try {
-        //     await apiService.deleteData(/admin/match / ${ id });
-        //     setMatches(matches.filter((match) => match.id !== id));
-        //     toast.success('Match deleted successfully!');
-        // } catch (error) {
-        //     toast.error('Error deleting match');
-        //     console.error('Error:', error);
-        // }
+    const handleDeleteMatch = async (id, status) => {
+        try {
+            // Send delete request to the server
+            await apiService.deleteData(`/admin/deleteMatch/${id}`);
+            
+            // Remove the match from the correct list based on its status
+            if (status === 'Live') {
+                setLiveMatches(liveMatches.filter((match) => match.id !== id));
+            } else if (status === 'Upcoming') {
+                setUpcomingMatches(upcomingMatches.filter((match) => match.id !== id));
+            } else {
+                setCompletedMatches(completedMatches.filter((match) => match.id !== id));
+            }
+    
+            toast.success('Match deleted successfully!');
+        } catch (error) {
+            toast.error('Error deleting match');
+            console.error('Error:', error);
+        }
     };
 
     return (
@@ -135,8 +177,8 @@ const MatchesPage = () => {
                     </button>
                     <div className="bg-gray-700 bg-opacity-50 w-full h-56 rounded-lg mt-4 overflow-y-auto p-2">
                         {upcomingMatches.length > 0 ? (
-                            upcomingMatches.map(match => (
-                                <div key={match.id} className="p-2 bg-gray-800 rounded-lg mb-2 text-white">
+                            upcomingMatches.map((match, index) => (
+                                <div key={match.id || index} className="p-2 bg-gray-800 rounded-lg mb-2 text-white">
                                     <p>{match.home_team} vs {match.away_team}</p>
                                     <p>{match.match_date}</p>
                                     <div className="mt-4 flex justify-between">
@@ -147,7 +189,7 @@ const MatchesPage = () => {
                                             Edit
                                         </button>
                                         <button
-                                            onClick={() => handleDeleteMatch(match.id)}
+                                            onClick={() => handleDeleteMatch(match.id, match.status)}
                                             className="bg-red-500 text-white px-4 py-2 rounded-md"
                                         >
                                             Delete
@@ -168,8 +210,8 @@ const MatchesPage = () => {
                     </button>
                     <div className="bg-gray-700 bg-opacity-50 w-full h-56 rounded-lg mt-4 overflow-y-auto p-2">
                         {liveMatches.length > 0 ? (
-                            liveMatches.map(match => (
-                                <div key={match.id} className="p-2 bg-gray-800 rounded-lg mb-2 text-white">
+                            liveMatches.map((match, index) => (
+                                <div key={match.id || index} className="p-2 bg-gray-800 rounded-lg mb-2 text-white">
                                     <p>{match.home_team} vs {match.away_team}</p>
                                     <p>{match.match_date}</p>
                                     <div className="mt-4 flex justify-between">
@@ -180,7 +222,7 @@ const MatchesPage = () => {
                                             Edit
                                         </button>
                                         <button
-                                            onClick={() => handleDeleteMatch(match.id)}
+                                            onClick={() => handleDeleteMatch(match.id, match.status)}
                                             className="bg-red-500 text-white px-4 py-2 rounded-md"
                                         >
                                             Delete
@@ -201,8 +243,8 @@ const MatchesPage = () => {
                     </button>
                     <div className="bg-gray-700 bg-opacity-50 w-full h-56 rounded-lg mt-4 overflow-y-auto p-2">
                         {completedMatches.length > 0 ? (
-                            completedMatches.map(match => (
-                                <div key={match.id} className="p-2 bg-gray-800 rounded-lg mb-2 text-white">
+                            completedMatches.map((match, index) => (
+                                <div key={match.id || index} className="p-2 bg-gray-800 rounded-lg mb-2 text-white">
                                     <p>{match.home_team} vs {match.away_team}</p>
                                     <p>{match.match_date}</p>
                                     <div className="mt-4 flex justify-between">
@@ -213,7 +255,7 @@ const MatchesPage = () => {
                                             Edit
                                         </button>
                                         <button
-                                            onClick={() => handleDeleteMatch(match.id)}
+                                            onClick={() => handleDeleteMatch(match.id, match.status)}
                                             className="bg-red-500 text-white px-4 py-2 rounded-md"
                                         >
                                             Delete
@@ -227,7 +269,7 @@ const MatchesPage = () => {
                     </div>
                 </div>
             </div>
-        </div >
+        </div>
     );
 };
 
