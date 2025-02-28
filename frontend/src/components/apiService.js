@@ -34,8 +34,12 @@ const apiService = {
   //  Generic API Calls
   fetchData: (endpoint) => API.get(endpoint),
   postData: (endpoint, data) => API.post(endpoint, data),
+
+  // Added the PUT method
+  putData: (endpoint, data) => API.put(endpoint, data),
+
+  // Added the DELETE method 
   deleteData: (endpoint) => API.delete(endpoint),
-  updateData: (endpoint, data) => API.put(endpoint, data),
 };
 
 export default apiService;
