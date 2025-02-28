@@ -45,7 +45,7 @@ const PlayerPage = () => {
 
   const handleUpdatePlayerStat = async (id, updatedStat) => {
     try {
-    //   const response = await apiService.putData(/admin/player-stats/${id}, updatedStat); // API PUT request
+      //   const response = await apiService.putData(/admin/player-stats/${id}, updatedStat); // API PUT request
       const updatedStats = playerStats.map((stat) =>
         stat.id === id ? response.data : stat
       );
@@ -59,7 +59,7 @@ const PlayerPage = () => {
 
   const handleDeletePlayerStat = async (id) => {
     try {
-    //   await apiService.deleteData(/admin/player-stats/${id}); // API DELETE request
+      //   await apiService.deleteData(/admin/player-stats/${id}); // API DELETE request
       const updatedStats = playerStats.filter((stat) => stat.id !== id);
       setPlayerStats(updatedStats);
       toast.success('Player stats deleted successfully!');
@@ -68,6 +68,10 @@ const PlayerPage = () => {
       console.error('Error:', error);
     }
   };
+
+  console.log(playerStats);
+
+
 
   return (
     <div className="container mx-auto p-4">
@@ -182,6 +186,7 @@ function Section({ title, data, renderForm }) {
               <p><strong>Yellow Cards:</strong> {item.yellowCards}</p>
               <p><strong>Penalties Scored:</strong> {item.penaltiesScored}</p>
             </div>
+            console.log(item);
             <div className="mt-2 flex justify-between">
               <button
                 onClick={() => handleUpdatePlayerStat(item.id, { ...item })}

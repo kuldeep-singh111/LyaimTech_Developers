@@ -8,7 +8,7 @@ const { TeamChooseGet, TeamChoosePost, createLineUp } = require("../controllers/
 const { MatchOverview, createMatch, deleteMatch, updateMatch } = require("../controllers/matchOverview");
 const { WalletPage, AddFunds, AddFundssSuccess, Withdrawal } = require("../controllers/wallet");
 const { ContestHandle, JoinContest, checkUserContest, createContest, getAllContests, deleteContest, updateContest } = require("../controllers/contest");
-const { LeaderBoard, Finalize, CalculateScores } = require("../controllers/leaderboard");
+const { LeaderBoard, Finalize, CalculateScores, createPlayerStat } = require("../controllers/leaderboard");
 const { contact } = require("../controllers/contact.controller.js");
 
 const router = express.Router();
@@ -49,6 +49,8 @@ router.get("/leaderboard", authenticate, LeaderBoard)
 router.post("/leaderboard/finalize/:contestId", authenticate, Finalize)
 router.post("/leaderboard/calculate/scores", authenticate, CalculateScores)
 
+
+
 // Logout Route
 router.post("/logout", authenticate, logoutUser)
 
@@ -56,6 +58,7 @@ router.post("/logout", authenticate, logoutUser)
 router.post("/admin/match", authenticate, createMatch)
 router.post("/admin/contest", authenticate, createContest)
 router.post("/admin/team", authenticate, createLineUp)
+router.post('/admin/player-stats', createPlayerStat);
 
 router.get("/admin/getMatches", authenticate, MatchOverview);
 router.delete("/admin/deleteMatch/:matchId", authenticate, deleteMatch);
