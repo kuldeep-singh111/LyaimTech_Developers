@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import apiService from '@/components/apiService';
 import toast from 'react-hot-toast';
 
@@ -8,27 +8,31 @@ const ContestsPage = () => {
   const [contests, setContests] = useState([]);
   const [newContest, setNewContest] = useState({
     name: '',
-    entryFee: 0,
-    maxPlayers: 0,
-    prizePool: 0,
+    entryFee: '',
+    maxPlayers: '',
+    prizePool: '',
     matchId: '',
   });
 
-  // Fetch contests when component mounts
-  const fetchContests = async () => {
-    try {
-    //   const response = await apiService.fetchData('/admin/contests');
-      setContests(response.data);
-    } catch (error) {
-      toast.error('Error fetching contests');
-    }
-  };
+  useEffect(() => {
+    // Fetch contests when component mounts
+    const fetchContests = async () => {
+      try {
+        const response = await apiService.fetchData('/admin/getContests'); console.log(response)
+        setContests(response.data?.contests);
+      } catch (error) {
+        toast.error('Error fetching contests');
+      }
+    };
+
+    fetchContests();
+  }, [])
 
   // Handle new contest creation
   const handleCreateContest = async () => {
     try {
-    //   const response = await apiService.postData('/admin/contest', newContest);
-      setContests([...contests, response.data]);
+      const response = await apiService.postData('/admin/contest', newContest);
+      // setContests([...contests, response.data]);
       toast.success('Contest added successfully!');
       setNewContest({ name: '', entryFee: 0, maxPlayers: 0, prizePool: 0, matchId: '' });
     } catch (error) {
@@ -39,8 +43,8 @@ const ContestsPage = () => {
   // Handle contest deletion
   const handleDeleteContest = async (contestId) => {
     try {
-    //   await apiService.deleteData(/admin/contest/${contestId});
-      setContests(contests.filter(contest => contest.id !== contestId));
+      await apiService.deleteData(`/admin/deleteContest/${contestId}`);
+      setContests(contests.filter(contest => contest._id !== contestId));
       toast.success('Contest deleted successfully');
     } catch (error) {
       toast.error('Error deleting contest');
@@ -49,13 +53,13 @@ const ContestsPage = () => {
 
   // Handle contest update
   const handleUpdateContest = async (contestId, updatedContest) => {
-    try {
-    //   const response = await apiService.putData(/admin/contest/${contestId}, updatedContest);
-      setContests(contests.map(contest => contest.id === contestId ? response.data : contest));
-      toast.success('Contest updated successfully!');
-    } catch (error) {
-      toast.error('Error updating contest');
-    }
+    // try {
+    //   //   const response = await apiService.putData(/admin/contest/${contestId}, updatedContest);
+    //   setContests(contests.map(contest => contest.id === contestId ? response.data : contest));
+    //   toast.success('Contest updated successfully!');
+    // } catch (error) {
+    //   toast.error('Error updating contest');
+    // }
   };
 
   return (
@@ -113,21 +117,34 @@ const ContestsPage = () => {
 
       {/* Display contests in card format */}
       <div>
-        {contests.map((contest) => (
-          <div key={contest.id} className="border p-4 rounded-lg mb-4">
-            <h3 className="text-lg font-semibold">{contest.name}</h3>
-            <p>Entry Fee: ${contest.entryFee}</p>
-            <p>Max Players: {contest.maxPlayers}</p>
-            <p>Prize Pool: ${contest.prizePool}</p>
-            <p>Match ID: {contest.matchId}</p>
-            <button
-              onClick={() => handleDeleteContest(contest.id)}
-              className="bg-red-500 text-white px-6 py-2 rounded-md mt-2"
-            >
-              Delete
-            </button>
-          </div>
-        ))}
+        <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-2'>
+          {contests.map((contest) => (
+            <div key={contest._id} className="border p-2 rounded-lg mb-4">
+              <h3 className="text-lg font-semibold">{contest.name}</h3>
+              <p>Entry Fee: ${contest.entryFee}</p>
+              <p>Max Players: {contest.maxPlayers}</p>
+              <p>Prize Pool: ${contest.prizePool}</p>
+              <p>Match ID: {contest.matchId}</p>
+              <p>Players Joined: {contest.playersJoined}</p>
+              <p>Created At: {contest.createdAt}</p>
+              <p>Updated At: {contest.updatedAt}</p>
+              <div className="mt-4 flex justify-between">
+                <button
+                  onClick={() => handleUpdateContest(contest._id)}
+                  className="bg-yellow-500 text-white px-4 py-2 rounded-md"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => handleDeleteContest(contest._id)}
+                  className="bg-red-500 text-white px-4 py-2 rounded-md"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

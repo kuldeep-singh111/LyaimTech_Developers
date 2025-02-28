@@ -12,18 +12,18 @@ const TeamsPage = () => {
     awayTeam: '',
     homeTeamPlayers: '',
     awayTeamPlayers: '',
-    id: null, // Added ID for editing
+    // id: null, // Added ID for editing
   });
 
   // Fetch teams on component mount
   useEffect(() => {
     const fetchTeams = async () => {
-      try {
-        const response = await apiService.getData('/admin/teams');
-        setTeams(response.data);
-      } catch (error) {
-        toast.error('Error fetching teams');
-      }
+      // try {
+      //   const response = await apiService.getData('/admin/teams');
+      //   setTeams(response.data);
+      // } catch (error) {
+      //   toast.error('Error fetching teams');
+      // }
     };
     fetchTeams();
   }, []);
@@ -39,15 +39,15 @@ const TeamsPage = () => {
         awayTeamPlayers: newTeam.awayTeamPlayers.split(', '),
       };
       const response = await apiService.postData('/admin/team', payload);
-      setTeams([...teams, response.data]);
-      toast.success('Team added successfully!');
+      // setTeams([...teams, response.data]);
+      toast.success('Team added successfully!'); console.log(response);
       setNewTeam({
         matchId: '',
         homeTeam: '',
         awayTeam: '',
         homeTeamPlayers: '',
         awayTeamPlayers: '',
-        id: null,
+        // id: null,
       });
     } catch (error) {
       toast.error('Error adding team');
@@ -101,7 +101,7 @@ const TeamsPage = () => {
     //   toast.success('Team deleted successfully!');
     // } catch (error) {
     //   toast.error('Error deleting team');
-    }
+  }
 
   return (
     <div className="container mx-auto p-4">

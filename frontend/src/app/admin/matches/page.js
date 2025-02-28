@@ -154,7 +154,7 @@ const MatchesPage = () => {
                     className="border p-2 mb-2 w-full"
                     value={newMatch.match_date}
                     required
-                    min={new Date()}
+                    // min={new Date()}
                     onChange={(e) => setNewMatch({ ...newMatch, match_date: e.target.value })}
                 />
                 <select
@@ -188,6 +188,7 @@ const MatchesPage = () => {
                             upcomingMatches.map((match, index) => (
                                 <div key={match.id || index} className="p-2 bg-gray-800 rounded-lg mb-2 text-white">
                                     <p>{match.home_team} vs {match.away_team}</p>
+                                    <p>Mtach ID: {match.id}</p>
                                     <p>{match.match_date}</p>
                                     <div className="mt-4 flex justify-between">
                                         <button
