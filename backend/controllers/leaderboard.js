@@ -246,7 +246,61 @@ const CalculateScores = async (req, res) => {
     }
 };
 
-module.exports = { LeaderBoard, Finalize, CalculateScores };
+
+
+
+
+const createPlayerStat = async (req, res) => {
+    try {
+        const {
+            matchId,
+            playerId,
+            goals,
+            assists,
+            shots,
+            passes,
+            tackles,
+            interceptions,
+            yellowCards,
+            penaltiesScored,
+        } = req.body;
+
+        if (!matchId || !playerId) {
+            return res.status(400).json({ success: false, message: 'Match ID and Player ID are required' });
+        }
+
+        // Creating new player stat entry
+        const newPlayerStat = new PlayerStats({
+            matchId,
+            playerId,
+            goals: goals || 0,
+            assists: assists || 0,
+            shots: shots || 0,
+            passes: passes || 0,
+            tackles: tackles || 0,
+            interceptions: interceptions || 0,
+            yellowCards: yellowCards || 0,
+            penaltiesScored: penaltiesScored || 0,
+        });
+
+        // Save to database
+        const savedStat = await newPlayerStat.save();
+
+        return res.status(201).json({
+            success: true,
+            message: 'Player stats added successfully',
+            data: savedStat,
+        });
+    } catch (error) {
+        console.error('Error adding player stats:', error);
+        return res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+};
+
+
+
+
+module.exports = { LeaderBoard, Finalize, CalculateScores, createPlayerStat };
 
 
 
