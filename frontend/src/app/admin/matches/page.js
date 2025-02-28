@@ -18,12 +18,13 @@ const MatchesPage = () => {
     useEffect(() => {
         const fetchMatches = async () => {
             try {
-                const response = await apiService.fetchData('/admin/getMatches'); console.log(response);
+                const response = await apiService.fetchData('/admin/getMatches');
                 setLiveMatches(response.data?.live || []);
                 setUpcomingMatches(response.data?.upcoming || []);
                 setCompletedMatches(response.data?.completed || []);
             } catch (error) {
-                toast.error('Error fetching matches');
+                toast.error('Error fetching matches! Check console.');
+                console.error('Error', error);
             }
         };
         fetchMatches();
@@ -32,34 +33,33 @@ const MatchesPage = () => {
     // Create a new match
     const handleCreateMatch = async () => {
         try {
-            const response = await apiService.postData('/admin/match', newMatch);
-            setMatches([...matches, response.data]);
+            await apiService.postData('/admin/match', newMatch);
             toast.success('Match added successfully!');
             setNewMatch({ home_team: '', away_team: '', match_date: '', status: 'Upcoming' });
         } catch (error) {
-            toast.error('Error adding match');
+            toast.error(error?.response?.data?.message || 'Error adding match');
             console.error('Error:', error);
         }
     };
 
     // Edit a match
     const handleEditMatch = async (id) => {
-        const matchToEdit = matches.find((match) => match.id === id);
-        setNewMatch({
-            home_team: matchToEdit.home_team,
-            away_team: matchToEdit.away_team,
-            match_date: matchToEdit.match_date,
-            status: matchToEdit.status,
-        });
+        // const matchToEdit = matches.find((match) => match.id === id);
+        // setNewMatch({
+        //     home_team: matchToEdit.home_team,
+        //     away_team: matchToEdit.away_team,
+        //     match_date: matchToEdit.match_date,
+        //     status: matchToEdit.status,
+        // });
 
         // Optionally, we can remove the match temporarily from the list to show the form for editing
-        setMatches(matches.filter((match) => match.id !== id));
+        // setMatches(matches.filter((match) => match.id !== id));
     };
 
     // Save the edited match
-    const handleSaveEdit = async () => {
+    const handleSaveEdit = async (id) => {
         // try {
-        //     const response = await apiService.putData(/admin/match / ${ newMatch.id }, newMatch);
+        //     const response = await apiService.putData(/admin/updateMatch ${ id }, newMatch);
         //     setMatches((prevMatches) =>
         //         prevMatches.map((match) => (match.id === response.data.id ? response.data : match))
         //     );
@@ -71,15 +71,21 @@ const MatchesPage = () => {
     };
 
     // Delete a match
-    const handleDeleteMatch = async (id) => {
-        // try {
-        //     await apiService.deleteData(/admin/match / ${ id });
-        //     setMatches(matches.filter((match) => match.id !== id));
-        //     toast.success('Match deleted successfully!');
-        // } catch (error) {
-        //     toast.error('Error deleting match');
-        //     console.error('Error:', error);
-        // }
+    const handleDeleteMatch = async (id, status) => {
+        try {
+            await apiService.deleteData(`/admin/deleteMatch/${ id }`);
+            if (status == 'Upcoming') {
+                setUpcomingMatches(upcomingMatches.filter(match => match.id !== id))
+            } else if(status == 'Live'){
+                setLiveMatches(liveMatches.filter(match => match.id !== id));
+            } else {
+                setCompletedMatches(completedMatches.filter(match => match.id !== id));
+            }
+            toast.success('Match deleted successfully!');
+        } catch (error) {
+            toast.error('Error deleting match! Check console.');
+            console.error('Error:', error);
+        }
     };
 
     return (
@@ -89,11 +95,13 @@ const MatchesPage = () => {
             {/* Render Matches form */}
             <div>
                 <h3 className="text-xl font-semibold mb-2">{newMatch.id ? 'Edit Match' : 'Add New Match'}</h3>
+                <form onSubmit={handleCreateMatch}>
                 <input
                     type="text"
                     className="border p-2 mb-2 w-full"
                     placeholder="Home Team"
                     value={newMatch.home_team}
+                    required
                     onChange={(e) => setNewMatch({ ...newMatch, home_team: e.target.value })}
                 />
                 <input
@@ -101,12 +109,15 @@ const MatchesPage = () => {
                     className="border p-2 mb-2 w-full"
                     placeholder="Away Team"
                     value={newMatch.away_team}
+                    required
                     onChange={(e) => setNewMatch({ ...newMatch, away_team: e.target.value })}
                 />
                 <input
                     type="date"
                     className="border p-2 mb-2 w-full"
                     value={newMatch.match_date}
+                    required
+                    min={new Date()}
                     onChange={(e) => setNewMatch({ ...newMatch, match_date: e.target.value })}
                 />
                 <select
@@ -119,11 +130,13 @@ const MatchesPage = () => {
                     <option value="Completed">Completed</option>
                 </select>
                 <button
-                    onClick={newMatch.id ? handleSaveEdit : handleCreateMatch}
-                    className="bg-blue-500 text-white px-6 py-2 rounded-md"
+                    // onClick={newMatch.id ? handleSaveEdit : handleCreateMatch}
+                    type='submit'
+                    className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-300"
                 >
-                    {newMatch.id ? 'Save Changes' : 'Add Match'}
+                    {newMatch.id ? 'Update Match' : 'Add Match'}
                 </button>
+                </form>
             </div>
 
             {/* Render Matches list in Card Format */}
@@ -147,8 +160,8 @@ const MatchesPage = () => {
                                             Edit
                                         </button>
                                         <button
-                                            onClick={() => handleDeleteMatch(match.id)}
-                                            className="bg-red-500 text-white px-4 py-2 rounded-md"
+                                            onClick={() => handleDeleteMatch(match.id, match.status)}
+                                            className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-300"
                                         >
                                             Delete
                                         </button>
@@ -180,8 +193,8 @@ const MatchesPage = () => {
                                             Edit
                                         </button>
                                         <button
-                                            onClick={() => handleDeleteMatch(match.id)}
-                                            className="bg-red-500 text-white px-4 py-2 rounded-md"
+                                            onClick={() => handleDeleteMatch(match.id, match.status)}
+                                            className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-300"
                                         >
                                             Delete
                                         </button>
@@ -213,8 +226,8 @@ const MatchesPage = () => {
                                             Edit
                                         </button>
                                         <button
-                                            onClick={() => handleDeleteMatch(match.id)}
-                                            className="bg-red-500 text-white px-4 py-2 rounded-md"
+                                            onClick={() => handleDeleteMatch(match.id, match.status)}
+                                            className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-300"
                                         >
                                             Delete
                                         </button>
