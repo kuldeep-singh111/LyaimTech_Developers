@@ -4,7 +4,7 @@ const { login, signup } = require("../controllers/userControl")
 const { userProfile } = require("../controllers/userProfile")
 const { updateUserProfile } = require("../controllers/updateUserProfile");
 const { logoutUser } = require("../controllers/logoutUser");
-const { TeamChooseGet, TeamChoosePost, createLineUp } = require("../controllers/teamChooseGet")
+const { TeamChooseGet, TeamChoosePost, createLineUp, getAllTeams } = require("../controllers/teamChooseGet")
 const { MatchOverview, createMatch, deleteMatch, updateMatch } = require("../controllers/matchOverview");
 const { WalletPage, AddFunds, AddFundssSuccess, Withdrawal } = require("../controllers/wallet");
 const { ContestHandle, JoinContest, checkUserContest, createContest, getAllContests, deleteContest, updateContest } = require("../controllers/contest");
@@ -63,7 +63,8 @@ router.post('/admin/player-stats', createPlayerStat);
 router.get("/admin/getMatches", authenticate, MatchOverview);
 router.delete("/admin/deleteMatch/:matchId", authenticate, deleteMatch);
 router.put("/admin/updateMatch/:matchId", authenticate, updateMatch);
-// router.get("/admin/getTeams", authenticate, getAllTeams);
+
+router.get("/admin/getTeams", authenticate, getAllTeams);
 
 router.get("/admin/getContests", authenticate, getAllContests);
 router.delete("/admin/deleteContest/:contestId", authenticate, deleteContest);

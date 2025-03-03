@@ -4,16 +4,8 @@ const { Match } = require("../models/matches.js");
 const mongoose = require("mongoose");
 
 const TeamChooseGet = async (req, res) => {
-
-
-
     try {
         const { matchId } = req.params;
-
-
-
-
-
         //  Validate Match ID Format
         if (!matchId || !mongoose.Types.ObjectId.isValid(matchId)) {
             return res.status(400).json({ success: false, message: "Invalid or missing Match ID." });
@@ -27,13 +19,9 @@ const TeamChooseGet = async (req, res) => {
 
         const { home_team, away_team } = match; //  Dynamic Team Names
 
-
-
         //  Fetch Players from Lineup Collection (Only from Database)
         const homePlayers = await Lineup.find({ matchId, teamName: home_team });
         const awayPlayers = await Lineup.find({ matchId, teamName: away_team });
-
-
 
         //  If No Players Found, Return Empty Data
         if (homePlayers.length === 0 && awayPlayers.length === 0) {
@@ -52,7 +40,6 @@ const TeamChooseGet = async (req, res) => {
         return res.status(500).json({ success: false, message: "Internal Server Error", error: error.message });
     }
 };
-
 
 //  Team Choose POST Route
 const TeamChoosePost = async (req, res) => {
@@ -138,4 +125,9 @@ const createLineUp = async (req, res) => {
     }
 };
 
-module.exports = { TeamChooseGet, TeamChoosePost, createLineUp };
+const getAllTeams = async (_, res) => {
+    // const allMatches = await Match.find();
+    const allTeams = await Lineup.find();console.log(allTeams);
+}
+
+module.exports = { TeamChooseGet, TeamChoosePost, createLineUp, getAllTeams };
