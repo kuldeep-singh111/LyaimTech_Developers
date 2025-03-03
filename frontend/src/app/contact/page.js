@@ -19,7 +19,7 @@ const ContactUs = () => {
         try {
             const res = await apiService.contact(formData);
             setFormData({ email: "", message: "" })
-            toast.success(res.data);
+            toast.success(res.data?.message || "Message sent successfully!");
         } catch (error) {
             toast.error("Error:", error);
         }

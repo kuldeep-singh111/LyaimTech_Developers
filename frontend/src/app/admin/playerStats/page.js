@@ -69,7 +69,6 @@ const PlayerPage = () => {
     }
   };
 
-  console.log(playerStats);
 
 
 
@@ -186,7 +185,7 @@ function Section({ title, data, renderForm }) {
               <p><strong>Yellow Cards:</strong> {item.yellowCards}</p>
               <p><strong>Penalties Scored:</strong> {item.penaltiesScored}</p>
             </div>
-            console.log(item);
+
             <div className="mt-2 flex justify-between">
               <button
                 onClick={() => handleUpdatePlayerStat(item.id, { ...item })}
