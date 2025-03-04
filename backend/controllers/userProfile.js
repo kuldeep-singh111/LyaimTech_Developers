@@ -25,7 +25,7 @@ const userProfile = async (req, res) => {
 const getAllUser = async (_, res) => {
     try {
         const allUsers = await User.find().select("username email mobileNo referralCode wallet.depositAmount -_id");
-        res.status(200).json({data: allUsers})
+        res.status(200).json({users: allUsers})
     } catch (error) {
         res.status(500).json({ message: 'Server error while fetching all users.' });
     }
