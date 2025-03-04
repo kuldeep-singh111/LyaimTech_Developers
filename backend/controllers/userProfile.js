@@ -1,7 +1,4 @@
-// const dotenv = require('dotenv');
 const User = require("../models/user");
-// dotenv.config(); 
-
 
 const userProfile = async (req, res) => {
     const userId = req.user.id;
@@ -25,8 +22,13 @@ const userProfile = async (req, res) => {
     }
 };
 
+const getAllUser = async (_, res) => {
+    try {
+        const allUsers = await User.find().select("username email mobileNo referralCode wallet.depositAmount -_id");
+        res.status(200).json({data: allUsers})
+    } catch (error) {
+        res.status(500).json({ message: 'Server error while fetching all users.' });
+    }
+}
 
-
-
-
-module.exports = { userProfile };
+module.exports = { userProfile, getAllUser };
