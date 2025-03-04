@@ -6,12 +6,12 @@ import toast from 'react-hot-toast';
 
 const UsersPage = () => {
   const [users, setUsers] = useState();
-  console.log('users', users);
+
   useEffect(() => {
     // Fetch users when component mounts
     const fetchUsers = async () => {
       try {
-        const response = await apiService.fetchData('/admin/getUsers'); console.log(response)
+        const response = await apiService.fetchData('/admin/getUsers');
         setUsers(response.data?.users || []);
       } catch (error) {
         toast.error('Error fetching users! Check console.');
