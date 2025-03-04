@@ -71,15 +71,19 @@ const signup = async (req, res) => {
             return res.status(409).json({ message: "Username already in use!" });
         }
 
-        const usernameAsReferralCode = await User.findOne({ username: referralCode });
-        
-        if (!usernameAsReferralCode) {
-            return res.status(409).json({ message: "Invalid referral code!" });
+        let usernameAsReferralCode = null;
+
+        if (referralCode) {
+            usernameAsReferralCode = await User.findOne({ username: referralCode });
+
+            if (!usernameAsReferralCode) {
+                return res.status(409).json({ message: "Invalid referral code!" });
+            }
+
+            // add cash bonus to the refferer
+            usernameAsReferralCode.wallet.cashBonus += 10;
+            await usernameAsReferralCode.save();
         }
-        // add cash bonus to the refferer
-        usernameAsReferralCode.wallet.cashBonus += 10;
-        // console.log(usernameAsReferralCode.wallet);
-        await usernameAsReferralCode.save();
 
         const salt = await bcrypt.genSalt(12);
         const hashedPassword = await bcrypt.hash(password, salt);
