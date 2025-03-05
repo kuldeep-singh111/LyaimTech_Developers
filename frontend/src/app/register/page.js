@@ -18,12 +18,19 @@ const Register = () => {
     });
     const [checked, setChecked] = useState(false);
     const [errors, setErrors] = useState({});
+
+    const [sendOtpButton, setSentOtpButton] = useState(true);
+    const [OTP, setOTP] = useState('');
+    const [isEmailVerified, setIsEmailVerified] = useState(false);
     const router = useRouter();
 
     // Handle input changes
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
+    };
+    const handleOTPChange = (e) => {
+        setOTP(e.target.value);
     };
 
     // Validation logic
@@ -57,13 +64,36 @@ const Register = () => {
         }
 
         try {
-            const response = await apiService.signup(formData);
+            await apiService.signup(formData);
             toast.success('Registered successfully');
             router.push("/login");
         } catch (error) {
             toast.error(error.response?.data?.message || "Something went wrong");
         }
     };
+
+    const handleSendOtp = async () => {
+        try {
+            const payload = { "email": formData.email };
+            const response = await apiService.postData('/send-email', payload); //console.log(response);
+            toast.success('OTP sent successfully on the email.');
+            setSentOtpButton(false);
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Something went wrong");
+        }
+    }
+
+    const handleVerifyOtp = async () => {
+        try {
+            const payload = { "email": formData.email, "otp": OTP };
+            const response = await apiService.postData('/verify-otp', payload); console.log(response);
+            toast.success('OTP verified successfully! Now continue register.');
+            setOTP('');
+            setIsEmailVerified(true);
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Something went wrong");
+        }
+    }
 
     const isFormValid =
         formData.username.trim() &&
@@ -180,6 +210,38 @@ const Register = () => {
                         </div>
 
                         {/* Register Button */}
+                        {sendOtpButton ? (<button
+                            type="button"
+                            onClick={handleSendOtp}
+                            disabled={!formData.email}
+                            className={`w-full my-1 py-1 rounded-full text-lg font-bold transition bg-blue-500
+                                ${formData.email ? "text-white" : "text-gray-500 cursor-not-allowed"}`}
+                        >
+                            Send OTP on email
+                        </button>) : (<div className='flex gap-2'>
+                            <div className="">
+                                <input
+                                    type='text'
+                                    name="OTP"
+                                    placeholder="OTP"
+                                    value={OTP}
+                                    onChange={(e) => handleOTPChange(e)}
+                                    className="w-full border-b bg-transparent font-aleo text-xl placeholder-gray-800 outline-none pl-2"
+                                />
+                                {/* {errors.mobileNo && <p className="text-red-500 text-sm mt-1">{errors.mobileNo}</p>} */}
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={handleVerifyOtp}
+                                disabled={!OTP || isEmailVerified}
+                                className={`w-full my-1 py-1 rounded-full text-lg font-bold transition bg-blue-500
+                                ${OTP ? "text-white" : "text-gray-700 cursor-not-allowed"}`}
+                            >
+                                {isEmailVerified ? 'OTP Verified ✅' : 'Verify OTP'}
+                            </button>
+                        </div>
+                        )}
                         <button
                             type="submit"
                             disabled={!isFormValid}

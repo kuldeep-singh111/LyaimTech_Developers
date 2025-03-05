@@ -10,6 +10,7 @@ const { WalletPage, AddFunds, AddFundssSuccess, Withdrawal } = require("../contr
 const { ContestHandle, JoinContest, checkUserContest, createContest, getAllContests, deleteContest, updateContest } = require("../controllers/contest");
 const { LeaderBoard, Finalize, CalculateScores, createPlayerStat } = require("../controllers/leaderboard");
 const { contact } = require("../controllers/contact.controller.js");
+const { sendOtpForEmailVerification, verifyOtpForEmail } = require("../controllers/emailVerification.controller.js");
 
 const router = express.Router();
 
@@ -19,6 +20,8 @@ router.post('/api/contact', contact);
 // Auth Routes
 router.post("/login", login)
 router.post("/signup", signup)
+router.post("/send-email", sendOtpForEmailVerification)
+router.post("/verify-otp", verifyOtpForEmail)
 
 // Profile Routes
 router.get("/profile", authenticate, userProfile)
@@ -40,7 +43,6 @@ router.get("/wallet/add-funds/success", authenticate, AddFundssSuccess);
 router.post("/wallet/withdraw", authenticate, Withdrawal);
 
 //Contest Route
-// router.get("/contest", authenticate, ContestHandle);
 router.get("/contest/:matchId", authenticate, ContestHandle);
 router.post("/contest/join", authenticate, JoinContest)
 
@@ -48,8 +50,6 @@ router.post("/contest/join", authenticate, JoinContest)
 router.get("/leaderboard", authenticate, LeaderBoard)
 router.post("/leaderboard/finalize/:contestId", authenticate, Finalize)
 router.post("/leaderboard/calculate/scores", authenticate, CalculateScores)
-
-
 
 // Logout Route
 router.post("/logout", authenticate, logoutUser)
