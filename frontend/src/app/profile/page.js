@@ -5,9 +5,12 @@ import Link from 'next/link';
 import { useUser } from "@/context/AuthContext.js";
 import withAuth from "../../hoc/withAuth.js";
 import LoadingPage from '@/components/LoadingPage.js';
+import { FaChevronDown } from "react-icons/fa";
+import { useState } from 'react';
 
 const Profile = () => {
   const { user, loading, wallet } = useUser();
+  const [showReferral, setShowReferral] = useState(false);
 
   if (loading) {
     // return <p className="text-center text-white text-2xl">Loading...</p>;
@@ -27,7 +30,7 @@ const Profile = () => {
       }}
     >
       <Navbar />
-      <div className="flex justify-center items-center min-h-screen p-4 ">
+      <div className="flex justify-center items-center min-h-screen p-4 font-aleo ">
         <div className="bg-gray-300 bg-opacity-5 max-w-4xl w-full rounded-xl overflow-hidden">
           <div className="flex flex-col md:flex-row justify-center items-center w-full mx-auto">
 
@@ -65,13 +68,42 @@ const Profile = () => {
                 />
 
 
-                <input
+                {/* <input
                   type="text"
                   name="username"
                   value={user?.username}
                   readOnly
                   className="w-full border-b bg-transparent font-aleo text-xl outline-none placeholder-black pl-2 py-2"
-                />
+                /> */}
+
+
+
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="text"
+                    name="username"
+                    value={user?.username}
+                    readOnly
+                    className="w-full border-b bg-transparent font-aleo text-xl outline-none placeholder-black pl-2 py-2"
+                  />
+                  {/*  Dropdown Button */}
+                  <button
+                    onClick={() => setShowReferral(!showReferral)}
+                    className="text-white bg-gradient-to-r from-[#5672B8] via-[#040B29DB] to-[#040B29DB] px-2 py-1 rounded-full hover:text-gray-500"
+                  >
+                    <FaChevronDown />
+                  </button>
+                </div>
+
+
+                {showReferral && (
+                  <p className="text-white bg-[#45435c33] p-2 rounded-md mt-2 text-center font-aleo">
+                    A total of  <span className='font-bold text-green-950'>{user?.referralCount || 0}</span> users have registered using your referral.
+                  </p>
+                )}
+
+
+
 
                 <input
                   type="number"

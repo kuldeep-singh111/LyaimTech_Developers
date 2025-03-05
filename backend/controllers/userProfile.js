@@ -10,10 +10,15 @@ const userProfile = async (req, res) => {
 
         const adminUsers = ["67b42373ec0b5dc8a639ef91", "67b41ccb88e950464ab6bd83", "67b431dad976d17271d87935"]; // List of admin user IDs
 
+        // Referral Count Logic
+        const referralCount = await User.countDocuments({ referralCode: user.username }).lean();
+
+
         // Manually add the role before sending the response
         const userWithRole = {
             ...user.toObject(), // Convert Mongoose document to plain object
-            role: adminUsers.includes(userId) ? "admin" : "user" // Assign role dynamically
+            role: adminUsers.includes(userId) ? "admin" : "user", // Assign role dynamically
+            referralCount   // Add referral count
         };
 
         res.json(userWithRole);
@@ -25,7 +30,7 @@ const userProfile = async (req, res) => {
 const getAllUser = async (_, res) => {
     try {
         const allUsers = await User.find().select("username email mobileNo referralCode wallet.depositAmount -_id");
-        res.status(200).json({users: allUsers})
+        res.status(200).json({ users: allUsers })
     } catch (error) {
         res.status(500).json({ message: 'Server error while fetching all users.' });
     }
