@@ -10,6 +10,7 @@ const { WalletPage, AddFunds, AddFundssSuccess, Withdrawal } = require("../contr
 const { ContestHandle, JoinContest, checkUserContest, createContest, getAllContests, deleteContest, updateContest } = require("../controllers/contest");
 const { LeaderBoard, Finalize, CalculateScores, createPlayerStat } = require("../controllers/leaderboard");
 const { contact } = require("../controllers/contact.controller.js");
+const User = require("../models/user.js");
 
 const router = express.Router();
 

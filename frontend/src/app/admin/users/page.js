@@ -20,13 +20,27 @@ const UsersPage = () => {
         };
 
         fetchUsers();
-    }, [])
+    }, []);
+
+    const handleDelete = async (username) => {
+        try {
+            // Assuming an endpoint to delete a user by username
+            const response = await apiService.deleteData(`/admin/deleteUser/${username}`);
+            if (response?.status === 200) {
+                toast.success('User deleted successfully');
+                setUsers(users.filter(user => user.username !== username)); // Remove the user from the list
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Error deleting user!');
+            console.error(error);
+        }
+    };
 
     return (
         <div className="container mx-auto p-4">
             <h1 className="text-3xl font-bold mb-4">All Users</h1>
 
-            <div className=''>
+            <div className="">
                 <table className="min-w-full border-collapse border border-gray-300">
                     <thead>
                         <tr className="bg-gray-100">
@@ -35,6 +49,7 @@ const UsersPage = () => {
                             <th className="border border-gray-300 px-4 py-2 text-left">Mobile No</th>
                             <th className="border border-gray-300 px-4 py-2 text-left">Referral Code</th>
                             <th className="border border-gray-300 px-4 py-2 text-left">Wallet Amount</th>
+                            <th className="border border-gray-300 px-4 py-2 text-left">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -45,10 +60,18 @@ const UsersPage = () => {
                                 <td className="border border-gray-300 px-4 py-2">{user.mobileNo}</td>
                                 <td className="border border-gray-300 px-4 py-2">{user.referralCode || '-'}</td>
                                 <td className="border border-gray-300 px-4 py-2">${user.wallet.depositAmount.toFixed(2)}</td>
+                                <td className="border border-gray-300 px-4 py-2">
+                                    <button
+                                        onClick={() => handleDelete(user.username)}
+                                        className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+                                    >
+                                        Delete
+                                    </button>
+                                </td>
                             </tr>
                         ))) : (
                             <tr>
-                                <td colSpan="5" className="border border-gray-300 px-4 py-2 text-center">
+                                <td colSpan="6" className="border border-gray-300 px-4 py-2 text-center">
                                     No users found
                                 </td>
                             </tr>
