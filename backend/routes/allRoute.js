@@ -1,7 +1,7 @@
 const express = require("express");
 const { authenticate } = require("../middleware/auth")
 const { login, signup } = require("../controllers/userControl")
-const { userProfile, getAllUser } = require("../controllers/userProfile")
+const { userProfile, getAllUser, deleteUser } = require("../controllers/userProfile")
 const { updateUserProfile } = require("../controllers/updateUserProfile");
 const { logoutUser } = require("../controllers/logoutUser");
 const { TeamChooseGet, TeamChoosePost, createLineUp } = require("../controllers/teamChooseGet")
@@ -70,4 +70,5 @@ router.delete("/admin/deleteContest/:contestId", authenticate, deleteContest);
 router.put("/admin/updateContest/:contestId", authenticate, updateContest);
 
 router.get("/admin/getUsers", authenticate, getAllUser);
+router.delete("/admin/deleteUser/:username", authenticate, deleteUser);
 module.exports = router;
