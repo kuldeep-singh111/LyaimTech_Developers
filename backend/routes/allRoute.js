@@ -10,6 +10,7 @@ const { WalletPage, AddFunds, AddFundssSuccess, Withdrawal } = require("../contr
 const { ContestHandle, JoinContest, checkUserContest, createContest, getAllContests, deleteContest, updateContest } = require("../controllers/contest");
 const { LeaderBoard, Finalize, CalculateScores, createPlayerStat } = require("../controllers/leaderboard");
 const { contact } = require("../controllers/contact.controller.js");
+const User = require("../models/user.js");
 
 const router = express.Router();
 
@@ -70,4 +71,23 @@ router.delete("/admin/deleteContest/:contestId", authenticate, deleteContest);
 router.put("/admin/updateContest/:contestId", authenticate, updateContest);
 
 router.get("/admin/getUsers", authenticate, getAllUser);
+
+// Delete User Route
+router.delete("/admin/deleteUser/:username", authenticate, async (req, res) => {
+    const { username } = req.params;
+
+    try {
+        const user = await User.findOneAndDelete({ username });  // Find and delete the user by username
+        
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json({ message: 'User deleted successfully' });
+    } catch (error) {
+        console.error("Error deleting user:", error);
+        res.status(500).json({ message: 'Error deleting user', error });
+    }
+});
+
 module.exports = router;
