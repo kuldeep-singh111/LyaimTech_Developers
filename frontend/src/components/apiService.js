@@ -26,11 +26,11 @@ const apiService = {
   signup: (data) => API.post("/signup", data),
   login: (data) => API.post("login", data),
   logout: () => API.post("/logout"),
-  profile: () => API.get("profile"),
-  profileUpdate: (data) => API.put("profile/update", data),
-  contact: (data) => API.post("api/contact", data),
-  matchOverview: () => API.get("match/overview"),
-  leaderboard: () => API.get("leaderboard"),
+  profile: () => API.get("/profile"),
+  profileUpdate: (data) => API.put("/profile/update", data),
+  contact: (data) => API.post("/api/contact", data),
+  matchOverview: () => API.get("/match/overview"),
+  leaderboard: () => API.get("/leaderboard"),
 
   //  Generic API Calls
   fetchData: (endpoint) => API.get(endpoint),
