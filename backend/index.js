@@ -20,7 +20,7 @@ const corsOptions = {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error("Not allowed by Lyaim Tech CORS"));
+      callback(new Error("Not allowed by Lyaim Tech CORS..."));
     }
   },
   credentials: true, //  Allow cookies & authentication headers
