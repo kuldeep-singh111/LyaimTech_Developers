@@ -36,4 +36,40 @@ const getAllUser = async (_, res) => {
     }
 }
 
-module.exports = { userProfile, getAllUser };
+const Contest = require('../models/Contest'); // If user is linked to contests
+const Team = require('../models/Team'); // If user has teams
+// const Wallet = require('../models/Wallet'); // If user has a wallet
+
+const deleteUser = async (req, res) => {
+    try {
+        const { username } = req.params;
+
+        // Check if user exists
+        const user = await User.findOne({username});
+        // console.log(user);
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+        const userId = user._id;
+
+        // Delete related documents (assuming references exist)
+        await Contest.updateMany(
+            { "players.userId": userId }, // Find contests where user is a player
+            { $pull: { players: { userId } } } // Remove user from 'players' array
+        );
+
+        await Team.deleteMany({ userId }); // Delete teams created by the user
+
+        // await Wallet.deleteOne({ userId }); // Delete the user's wallet (if exists)
+
+        // Finally, delete the user
+        await User.findByIdAndDelete(userId);
+
+        res.status(200).json({ success: true, message: "User and related data deleted successfully" });
+    } catch (error) {
+        console.error("Error deleting user:", error);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
+};
+
+module.exports = { userProfile, getAllUser, deleteUser };
