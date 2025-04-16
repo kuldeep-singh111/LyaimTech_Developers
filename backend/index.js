@@ -10,7 +10,8 @@ const PORT = process.env.PORT;
 
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://lyaim-tech.vercel.app"
+  "https://lyaim-tech.vercel.app",
+  "https://lyaim-tech-pevuqqv6n-kuldeep-singh111s-projects.vercel.app"
   // "https://www.lyaim.com",
   // "https://lyaim.com",
 ];

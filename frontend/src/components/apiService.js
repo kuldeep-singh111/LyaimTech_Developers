@@ -4,9 +4,10 @@ import axios from "axios";
 // baseURL: https://api.lyaim.com
 
 const API = axios.create({
-  // baseURL: "https://lyaimtechdevelopers-production.up.railway.app" || "http://localhost:9000",
-  baseURL: process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:9000",
+  baseURL: "https://lyaimtechdevelopers-production.up.railway.app" || "http://localhost:9000",
   withCredentials: true,
+  // baseURL: process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:9000",
+
 });
 
 //  Response Interceptor (Global Error Handling)
@@ -24,13 +25,13 @@ API.interceptors.response.use(
 //  Centralized API Methods
 const apiService = {
   signup: (data) => API.post("/signup", data),
-  login: (data) => API.post("login", data),
+  login: (data) => API.post("/login", data),
   logout: () => API.post("/logout"),
-  profile: () => API.get("profile"),
-  profileUpdate: (data) => API.put("profile/update", data),
+  profile: () => API.get("/profile"),
+  profileUpdate: (data) => API.put("/profile/update", data),
   contact: (data) => API.post("/api/contact", data),
-  matchOverview: () => API.get("match/overview"),
-  leaderboard: () => API.get("leaderboard"),
+  matchOverview: () => API.get("/match/overview"),
+  leaderboard: () => API.get("/leaderboard"),
 
   //  Generic API Calls
   fetchData: (endpoint) => API.get(endpoint),
